@@ -1,11 +1,15 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from script import predict_from_bytes
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = FastAPI(
     title="Breast Cancer API",
-    description="API de prédiction IDC avec ResNet50",
-    version="1.0.0"
+    description="API de prédiction IDC avec ResNet50 et génération de rapports par Gemini AI",
+    version="2.0.0"
 )
 
 

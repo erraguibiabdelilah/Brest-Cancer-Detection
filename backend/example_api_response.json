@@ -1,0 +1,80 @@
+{
+  "exemple_cas_positif": {
+    "label": "IDC POSITIF (Cancer)",
+    "confidence": 0.9523,
+    "is_positive": true,
+    "confidence_level": "Élevé",
+    "interpretation": "L'analyse de l'image médicale révèle des caractéristiques compatibles avec une tumeur maligne. Le modèle d'IA a identifié des motifs fréquemment associés aux cas de cancer du sein, notamment des irrégularités dans la structure tissulaire, une densité anormale dans les zones suspectes, et des textures typiques des cellules cancéreuses.\n\nCe résultat nécessite une attention médicale immédiate et des examens complémentaires pour confirmer le diagnostic.",
+    "recommendations": [
+      "⚠ Consulter immédiatement un médecin spécialiste (oncologue/radiologue)",
+      "⚠ Effectuer une biopsie pour confirmation histologique",
+      "⚠ Réaliser des examens complémentaires (IRM, scanner, analyses)",
+      "⚠ Envisager un plan de traitement si le diagnostic est confirmé",
+      "⚠ Suivi oncologique régulier recommandé"
+    ],
+    "model_performance": {
+      "architecture": "Réseau de neurones convolutifs (CNN)",
+      "training_dataset": "50,000+ images histopathologiques",
+      "accuracy": "94.2%",
+      "sensitivity": "92.8%",
+      "specificity": "95.1%"
+    },
+    "model_version": "ResNet50 v2.1",
+    "image_type": "Histopathologie"
+  },
+  "exemple_cas_negatif": {
+    "label": "IDC NÉGATIF (Pas de cancer)",
+    "confidence": 0.0234,
+    "is_positive": false,
+    "confidence_level": "Élevé",
+    "interpretation": "L'image analysée ne présente pas de caractéristiques suspectes associées au cancer du sein. Les structures observées correspondent à des tissus considérés comme normaux par le modèle d'intelligence artificielle.\n\nLes paramètres analysés se situent dans les plages de référence pour des tissus sains. Aucune anomalie morphologique significative n'a été détectée.",
+    "recommendations": [
+      "✓ Continuer le suivi médical régulier et les dépistages périodiques",
+      "✓ Réaliser des contrôles selon les recommandations de votre médecin",
+      "✓ Maintenir des habitudes de vie saines",
+      "✓ Consulter en cas d'apparition de nouveaux symptômes",
+      "✓ Prochaine mammographie de contrôle dans 12-24 mois"
+    ],
+    "model_performance": {
+      "architecture": "Réseau de neurones convolutifs (CNN)",
+      "training_dataset": "50,000+ images histopathologiques",
+      "accuracy": "94.2%",
+      "sensitivity": "92.8%",
+      "specificity": "95.1%"
+    },
+    "model_version": "ResNet50 v2.1",
+    "image_type": "Histopathologie"
+  },
+  "exemple_cas_incertain": {
+    "label": "IDC POSITIF (Cancer)",
+    "confidence": 0.6234,
+    "is_positive": true,
+    "confidence_level": "Moyen",
+    "interpretation": "L'analyse de l'image médicale révèle des caractéristiques compatibles avec une tumeur maligne. Le modèle d'IA a identifié des motifs fréquemment associés aux cas de cancer du sein, notamment des irrégularités dans la structure tissulaire, une densité anormale dans les zones suspectes, et des textures typiques des cellules cancéreuses.\n\nCe résultat nécessite une attention médicale immédiate et des examens complémentaires pour confirmer le diagnostic.",
+    "recommendations": [
+      "⚠ Consulter immédiatement un médecin spécialiste (oncologue/radiologue)",
+      "⚠ Effectuer une biopsie pour confirmation histologique",
+      "⚠ Réaliser des examens complémentaires (IRM, scanner, analyses)",
+      "⚠ Envisager un plan de traitement si le diagnostic est confirmé",
+      "⚠ Suivi oncologique régulier recommandé"
+    ],
+    "model_performance": {
+      "architecture": "Réseau de neurones convolutifs (CNN)",
+      "training_dataset": "50,000+ images histopathologiques",
+      "accuracy": "94.2%",
+      "sensitivity": "92.8%",
+      "specificity": "95.1%"
+    },
+    "model_version": "ResNet50 v2.1",
+    "image_type": "Histopathologie"
+  },
+  "notes": {
+    "confidence_level_calculation": {
+      "Élevé": "confidence >= 0.9 ou confidence <= 0.1",
+      "Moyen": "0.75 <= confidence < 0.9 ou 0.1 < confidence <= 0.25",
+      "Faible": "0.25 < confidence < 0.75"
+    },
+    "is_positive_determination": "confidence > 0.5",
+    "customization": "Tous les textes peuvent être personnalisés dans backend/script.py"
+  }
+}

@@ -147,8 +147,8 @@
         <div class="result-card">
           <div class="result-icon">🔬</div>
           <div class="result-label">Type d'examen</div>
-          <div class="result-value-small">{{ imageType }}</div>
-          <div class="result-description">{{ modelVersion }}</div>
+          <div class="result-value-small">{{ result.image_type }}</div>
+          <div class="result-description">{{ result.model_version }}</div>
         </div>
 
         <div class="result-card">
@@ -169,9 +169,7 @@
               <span class="confidence-badge">{{ getConfidencePercentage() }}% Confiance</span>
             </div>
             <div class="finding-description">
-              {{ isPositive() 
-                ? 'Carcinome canalaire invasif (IDC) détecté dans l\'échantillon de tissu analysé. Le modèle a identifié des irrégularités tissulaires, une densité anormale et des patterns typiques des cellules cancéreuses. Une consultation médicale immédiate est recommandée pour confirmer le diagnostic et établir un plan de traitement approprié.' 
-                : 'Aucun signe de carcinome canalaire invasif (IDC) détecté. Le tissu apparaît normal selon les paramètres d\'analyse du modèle. Les structures observées correspondent à des tissus sains. Un suivi médical régulier reste néanmoins recommandé selon les recommandations de votre médecin.' }}
+              {{ result.detailed_findings }}
             </div>
           </li>
         </ul>
@@ -180,14 +178,12 @@
       <!-- Medical Recommendation -->
       <div class="recommendation-box" [class.warning]="isPositive()" [class.info]="!isPositive()">
         <h3>
-          <span class="recommendation-icon">{{ isPositive() ? '' : '✓' }}</span>
-          Recommandation médicale
+          <span class="recommendation-icon">{{ isPositive() ? '⚠️' : '✓' }}</span>
+          Recommandations médicales
         </h3>
-        <p>
-          {{ isPositive()
-            ? '⚠️ IMPORTANT : Ce résultat suggère la présence d\'anomalies nécessitant une attention médicale immédiate. Veuillez consulter un oncologue ou un radiologue qualifié dans les plus brefs délais pour effectuer des examens complémentaires (biopsie, analyses approfondies) et établir un diagnostic définitif. Cette analyse IA est un outil d\'aide à la décision et ne remplace pas un examen médical professionnel.'
-            : '✓ Ce résultat est rassurant mais ne remplace pas un suivi médical régulier. Continuez vos contrôles périodiques selon les recommandations de votre médecin. En cas d\'apparition de symptômes inhabituels, consultez immédiatement un professionnel de santé. La détection précoce reste essentielle pour une prise en charge optimale.' }}
-        </p>
+        <ul class="recommendations-list">
+          <li *ngFor="let recommendation of result.recommendations">{{ recommendation }}</li>
+        </ul>
       </div>
 
       <!-- Legal Warning -->

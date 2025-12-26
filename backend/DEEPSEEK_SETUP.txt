@@ -1,0 +1,125 @@
+╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+║         🚀 CONFIGURATION DEEPSEEK AI 🚀                   ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+
+✅ POURQUOI DEEPSEEK ?
+══════════════════════
+
+✅ Gratuit (5M tokens/jour)
+✅ Rapide
+✅ Pas de quota restrictif comme Gemini
+✅ Qualité excellente
+✅ API compatible OpenAI
+
+📝 ÉTAPES DE CONFIGURATION
+═══════════════════════════
+
+1️⃣  CRÉER UN COMPTE DEEPSEEK
+   --------------------------------
+   Visitez: https://platform.deepseek.com
+   
+   - Cliquez sur "Sign Up"
+   - Créez un compte (email + mot de passe)
+   - Vérifiez votre email
+
+2️⃣  OBTENIR LA CLÉ API
+   --------------------------------
+   Une fois connecté:
+   
+   - Allez sur: https://platform.deepseek.com/api_keys
+   - Cliquez sur "Create API Key"
+   - Donnez un nom (ex: "BreastCare")
+   - Copiez la clé (commence par "sk-...")
+
+3️⃣  CONFIGURER LA CLÉ
+   --------------------------------
+   Ouvrez: backend/.env
+   
+   Remplacez:
+   DEEPSEEK_API_KEY=your_deepseek_api_key_here
+   
+   Par:
+   DEEPSEEK_API_KEY=sk-votre_vraie_cle_ici
+
+4️⃣  INSTALLER LES DÉPENDANCES
+   --------------------------------
+   cd backend
+   pip install requests
+
+5️⃣  REDÉMARRER LE BACKEND
+   --------------------------------
+   Fermez le backend actuel (CTRL+C)
+   Relancez:
+   python -m uvicorn main:app --reload
+
+📊 VÉRIFICATION
+═══════════════
+
+Au démarrage, vous devriez voir:
+   ✅ DeepSeek AI activé - Génération de contenu unique
+
+Pendant l'analyse:
+   🤖 Génération avec DeepSeek AI...
+   📝 Appel DeepSeek pour interprétation...
+   ✅ Interprétation générée (XXX caractères)
+   📝 Appel DeepSeek pour recommandations...
+   ✅ Recommandations générées (5 items)
+   📝 Appel DeepSeek pour observations...
+   ✅ Observations générées (XXX caractères)
+   ✅ Contenu généré par DeepSeek AI
+
+💡 AVANTAGES vs GEMINI
+══════════════════════
+
+DeepSeek:
+✅ 5M tokens/jour gratuits
+✅ Pas de quota restrictif
+✅ Rapide et fiable
+✅ API simple
+
+Gemini:
+❌ Quota très limité (épuisé rapidement)
+❌ Erreurs 429 fréquentes
+❌ Limite: 0 après quelques requêtes
+
+🎯 QUOTA DEEPSEEK
+═════════════════
+
+Gratuit:
+- 5,000,000 tokens/jour
+- ~1,000 rapports/jour
+- Largement suffisant !
+
+⚠️  IMPORTANT
+═════════════
+
+1. Ne partagez JAMAIS votre clé API
+2. Le fichier .env est protégé par .gitignore
+3. La clé commence par "sk-"
+4. Gardez-la confidentielle
+
+🧪 POUR TESTER
+══════════════
+
+1. Configurez la clé dans .env
+2. Redémarrez le backend
+3. Uploadez une image
+4. Regardez les logs
+5. Vérifiez le contenu du rapport
+
+Le contenu sera VRAIMENT unique cette fois ! 🎉
+
+📞 LIENS UTILES
+═══════════════
+
+Inscription: https://platform.deepseek.com
+API Keys: https://platform.deepseek.com/api_keys
+Documentation: https://platform.deepseek.com/docs
+
+🎉 C'EST TOUT !
+═══════════════
+
+DeepSeek est maintenant configuré et prêt à générer
+du contenu médical unique et professionnel ! 🚀

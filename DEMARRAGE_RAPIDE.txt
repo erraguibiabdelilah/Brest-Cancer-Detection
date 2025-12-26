@@ -1,0 +1,96 @@
+╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+║        BREAST CANCER DETECTION - GUIDE DE DÉMARRAGE       ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+
+🚀 DÉMARRAGE RAPIDE
+═══════════════════
+
+Option 1 - Démarrage automatique (Recommandé)
+----------------------------------------------
+Double-cliquez sur: start_project.bat
+
+Option 2 - Démarrage manuel
+----------------------------
+1. Backend:
+   cd backend
+   python -m uvicorn main:app --reload
+
+2. Frontend (nouvelle fenêtre):
+   cd frontEnd
+   npm start
+
+🌐 ACCÈS À L'APPLICATION
+════════════════════════
+
+Backend API:  http://localhost:8000
+API Docs:     http://localhost:8000/docs
+Frontend:     http://localhost:4200
+
+⏱️  Attendez 1-2 minutes que le frontend démarre
+
+📝 UTILISATION
+══════════════
+
+1. Ouvrez http://localhost:4200
+2. Cliquez sur "Analyser" dans le menu
+3. Uploadez une image histopathologique
+4. Consultez les résultats de l'analyse
+5. Téléchargez le rapport PDF complet
+
+🛑 ARRÊT DES SERVEURS
+═════════════════════
+
+Option 1: Double-cliquez sur stop_project.bat
+Option 2: Fermez les fenêtres de terminal
+Option 3: Ctrl+C dans chaque terminal
+
+🤖 GEMINI AI
+════════════
+
+Status: Fallback mode (contenu statique)
+Raison: Quota gratuit temporairement dépassé
+
+L'application fonctionne normalement avec du contenu
+prédéfini de haute qualité !
+
+Pour réactiver Gemini AI:
+- Attendez la réinitialisation du quota (24h)
+- Ou utilisez une autre clé API
+
+📁 STRUCTURE DU PROJET
+══════════════════════
+
+backend/          - API FastAPI + Modèle IA
+frontEnd/         - Interface Angular
+start_project.bat - Démarrage automatique
+stop_project.bat  - Arrêt automatique
+
+💡 ASTUCES
+══════════
+
+- Les rapports PDF sont générés automatiquement
+- Chaque analyse a un ID patient unique
+- Les résultats incluent le niveau de confiance
+- Le système fonctionne hors ligne (sauf Gemini)
+
+🆘 PROBLÈMES COURANTS
+═════════════════════
+
+Port 8000 déjà utilisé:
+→ Exécutez stop_project.bat puis redémarrez
+
+Port 4200 déjà utilisé:
+→ Fermez les autres applications Angular
+
+Erreur "Module not found":
+→ cd backend && pip install -r requirements.txt
+→ cd frontEnd && npm install
+
+📞 SUPPORT
+══════════
+
+Pour toute question, consultez:
+- backend/README_GEMINI.txt (Configuration Gemini)
+- http://localhost:8000/docs (Documentation API)

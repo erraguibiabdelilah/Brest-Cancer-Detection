@@ -643,6 +643,24 @@ nav {
     font-size: 0.95rem;
     font-weight: 500;
   }
+
+  .recommendations-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      line-height: 1.6;
+      font-size: 0.95rem;
+      font-weight: 500;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
 }
 
 .legal-warning {

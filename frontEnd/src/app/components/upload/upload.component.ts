@@ -25,8 +25,6 @@ export class UploadComponent {
   processingTime: string = '< 2s';
   analysisStartTime: number = 0;
   patientId: string = '';
-  modelVersion: string = 'ResNet50 v2.1';
-  imageType: string = 'Histopathologie';
   private progressInterval: any = null;
   private progressStartTime: number = 0;
   private readonly MIN_PROGRESS_MS = 2000; // minimum animation duration
@@ -247,7 +245,7 @@ export class UploadComponent {
  generateMedicalReport(): void {
   if (!this.result) return;
 
-  const isPositive = this.isPositive();
+  const isPositive = this.result.is_positive;
   const confidence = this.getConfidencePercentage();
   const currentDate = new Date();
   
@@ -258,19 +256,21 @@ export class UploadComponent {
   let yPos = margin;
 
   // Fonction helper pour ajouter du texte avec gestion des pages
-  const addText = (text: string, fontSize: number, isBold: boolean = false, color: string = '#000000') => {
+  const addText = (text: string, fontSize: number, isBold: boolean = false, color: string = '#000000', maxWidth?: number) => {
     doc.setFontSize(fontSize);
     doc.setFont('helvetica', isBold ? 'bold' : 'normal');
     doc.setTextColor(color);
     
-    const lines = doc.splitTextToSize(text, pageWidth - margin * 2);
+    const textWidth = maxWidth || (pageWidth - margin * 2);
+    const lines = doc.splitTextToSize(text, textWidth);
+    
     lines.forEach((line: string) => {
-      if (yPos > pageHeight - margin) {
+      if (yPos > pageHeight - margin - 50) {
         doc.addPage();
         yPos = margin;
       }
       doc.text(line, margin, yPos);
-      yPos += fontSize * 1.3;
+      yPos += fontSize * 1.4;
     });
   };
 
@@ -318,7 +318,7 @@ export class UploadComponent {
     ['Identifiant Patient', this.patientId],
     ['Date d\'analyse', currentDate.toLocaleDateString('fr-FR')],
     ['Heure', currentDate.toLocaleTimeString('fr-FR')],
-    ['Type d\'examen', this.imageType]
+    ['Type d\'examen', this.result.image_type]
   ];
 
   patientInfo.forEach(([label, value]) => {
@@ -329,6 +329,30 @@ export class UploadComponent {
     
     doc.setTextColor('#000000');
     doc.setFont('helvetica', 'bold');
+    doc.text(value, margin + 150, yPos);
+    yPos += 20;
+  });
+
+  // ========================
+  // PROFESSIONNEL DE SANTÉ
+  // ========================
+  addSection('PROFESSIONNEL DE SANTÉ');
+  
+  const professionalInfo = [
+    ['Médecin prescripteur', 'Dr. [NOM DU MÉDECIN]'],
+    ['Spécialité', 'Oncologie / Radiologie'],
+    ['Établissement', '[NOM DE L\'ÉTABLISSEMENT]'],
+    ['Contact', '[TÉLÉPHONE / EMAIL]']
+  ];
+
+  professionalInfo.forEach(([label, value]) => {
+    doc.setTextColor('#666666');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text(label + ' :', margin, yPos);
+    
+    doc.setTextColor('#000000');
+    doc.setFont('helvetica', 'normal');
     doc.text(value, margin + 150, yPos);
     yPos += 20;
   });
@@ -360,11 +384,11 @@ export class UploadComponent {
   addSection('DÉTAILS DE L\'ANALYSE');
   
   const analysisDetails = [
-    ['Modèle IA', `CNN (${this.modelVersion})`],
+    ['Modèle IA', `CNN (${this.result.model_version})`],
     ['Dimensions image', this.imageDimensions],
     ['Nom du fichier', this.selectedFile?.name || 'N/A'],
     ['Temps de traitement', this.processingTime],
-    ['Niveau de confiance', confidence >= 90 ? 'Élevé' : confidence >= 75 ? 'Moyen' : 'Faible'],
+    ['Niveau de confiance', this.result.confidence_level],
     ['Classification', isPositive ? 'POSITIF - Anomalie détectée' : 'NÉGATIF - Aucune anomalie']
   ];
 
@@ -385,37 +409,16 @@ export class UploadComponent {
   // ========================
   addSection('INTERPRÉTATION CLINIQUE');
   
-  const interpretation = isPositive ? 
-    `L'analyse de l'image médicale révèle des caractéristiques compatibles avec une tumeur maligne. Le modèle d'IA a identifié des motifs fréquemment associés aux cas de cancer du sein, notamment des irrégularités dans la structure tissulaire, une densité anormale dans les zones suspectes, et des textures typiques des cellules cancéreuses.
-
-Ce résultat nécessite une attention médicale immédiate et des examens complémentaires pour confirmer le diagnostic.` :
-    `L'image analysée ne présente pas de caractéristiques suspectes associées au cancer du sein. Les structures observées correspondent à des tissus considérés comme normaux par le modèle d'intelligence artificielle.
-
-Les paramètres analysés se situent dans les plages de référence pour des tissus sains. Aucune anomalie morphologique significative n'a été détectée.`;
-
-  addText(interpretation, 10, false, '#333333');
+  addText(this.result.interpretation, 10, false, '#333333');
 
   // ========================
   // RECOMMANDATIONS
   // ========================
   addSection('RECOMMANDATIONS MÉDICALES');
   
-  const recommendations = isPositive ? [
-    '⚠ Consulter immédiatement un médecin spécialiste (oncologue/radiologue)',
-    '⚠ Effectuer une biopsie pour confirmation histologique',
-    '⚠ Réaliser des examens complémentaires (IRM, scanner, analyses)',
-    '⚠ Envisager un plan de traitement si le diagnostic est confirmé',
-    '⚠ Suivi oncologique régulier recommandé'
-  ] : [
-    '✓ Continuer le suivi médical régulier et les dépistages périodiques',
-    '✓ Réaliser des contrôles selon les recommandations de votre médecin',
-    '✓ Maintenir des habitudes de vie saines',
-    '✓ Consulter en cas d\'apparition de nouveaux symptômes',
-    '✓ Prochaine mammographie de contrôle dans 12-24 mois'
-  ];
-
-  recommendations.forEach(rec => {
-    addText(rec, 10, false, isPositive ? '#c0392b' : '#27ae60');
+  this.result.recommendations.forEach(rec => {
+    const cleanRec = rec.replace(/\s+/g, ' ').trim();
+    addText(cleanRec, 10, false, isPositive ? '#c0392b' : '#27ae60');
   });
 
   // ========================
@@ -424,13 +427,14 @@ Les paramètres analysés se situent dans les plages de référence pour des tis
   addSection('AVERTISSEMENT LÉGAL');
   
   doc.setFillColor(255, 243, 205);
-  doc.rect(margin - 10, yPos - 10, pageWidth - margin * 2 + 20, 100, 'F');
+  doc.rect(margin - 10, yPos - 10, pageWidth - margin * 2 + 20, 120, 'F');
   
   yPos += 5;
-  addText('⚠ IMPORTANT : Ce système est un outil d\'aide à la décision médicale et ne remplace EN AUCUN CAS l\'avis d\'un professionnel de santé qualifié.', 10, true, '#856404');
+  const warningTitle = '⚠ IMPORTANT : Ce système est un outil d\'aide à la décision médicale et ne remplace EN AUCUN CAS l\'avis d\'un professionnel de santé qualifié.';
+  addText(warningTitle, 10, true, '#856404');
   
   addSpace(10);
-  const legalText = `Ce résultat doit être interprété par un médecin compétent. Un diagnostic définitif nécessite un examen clinique complet. L'exactitude du modèle IA peut varier selon la qualité de l'image. Toute décision thérapeutique doit être prise par un professionnel. La confidentialité des données patient est strictement protégée.`;
+  const legalText = 'Ce résultat doit être interprété par un médecin compétent. Un diagnostic définitif nécessite un examen clinique complet. L\'exactitude du modèle IA peut varier selon la qualité de l\'image. Toute décision thérapeutique doit être prise par un professionnel. La confidentialité des données patient est strictement protégée.';
   addText(legalText, 9, false, '#856404');
   
   yPos += 20;
@@ -441,11 +445,11 @@ Les paramètres analysés se situent dans les plages de référence pour des tis
   addSection('PERFORMANCES DU MODÈLE');
   
   const technicalInfo = [
-    ['Architecture', 'Réseau de neurones convolutifs (CNN)'],
-    ['Base d\'entraînement', '50,000+ images histopathologiques'],
-    ['Précision globale', '94.2%'],
-    ['Sensibilité', '92.8%'],
-    ['Spécificité', '95.1%']
+    ['Architecture', this.result.model_performance.architecture],
+    ['Base d\'entraînement', this.result.model_performance.training_dataset],
+    ['Précision globale', this.result.model_performance.accuracy],
+    ['Sensibilité', this.result.model_performance.sensitivity],
+    ['Spécificité', this.result.model_performance.specificity]
   ];
 
   technicalInfo.forEach(([label, value]) => {
@@ -502,7 +506,7 @@ Les paramètres analysés se situent dans les plages de référence pour des tis
   }
 
   isPositive(): boolean {
-    return this.result?.label.includes('POSITIF') || false;
+    return this.result?.is_positive || false;
   }
 
   getFileSize(bytes: number): string {

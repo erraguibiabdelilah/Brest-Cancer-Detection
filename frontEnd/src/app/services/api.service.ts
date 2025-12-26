@@ -2,9 +2,25 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface ModelPerformance {
+  architecture: string;
+  training_dataset: string;
+  accuracy: string;
+  sensitivity: string;
+  specificity: string;
+}
+
 export interface PredictionResult {
   label: string;
   confidence: number;
+  is_positive: boolean;
+  confidence_level: string;
+  interpretation: string;
+  recommendations: string[];
+  detailed_findings: string;
+  model_performance: ModelPerformance;
+  model_version: string;
+  image_type: string;
 }
 
 @Injectable({

@@ -1,0 +1,93 @@
+╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+║              COMMENT DÉMARRER LE PROJET                    ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+
+🚀 MÉTHODE RAPIDE (RECOMMANDÉE)
+═══════════════════════════════
+
+Double-cliquez sur ce fichier:
+   📁 start_project.bat
+
+C'est tout ! Le projet démarre automatiquement.
+
+
+📝 MÉTHODE MANUELLE
+═══════════════════
+
+Si vous préférez démarrer manuellement:
+
+1️⃣  BACKEND (Terminal 1)
+   ----------------------
+   cd backend
+   python -m uvicorn main:app --reload
+
+   ✅ Backend prêt sur: http://localhost:8000
+
+
+2️⃣  FRONTEND (Terminal 2)
+   -----------------------
+   cd frontEnd
+   .\node_modules\.bin\ng.cmd serve
+
+   ✅ Frontend prêt sur: http://localhost:4200
+
+
+🌐 ACCÉDER À L'APPLICATION
+══════════════════════════
+
+Ouvrez votre navigateur:
+   http://localhost:4200
+
+
+🛑 ARRÊTER LE PROJET
+════════════════════
+
+Double-cliquez sur:
+   📁 stop_project.bat
+
+Ou fermez les fenêtres de terminal.
+
+
+⚡ FICHIERS IMPORTANTS
+══════════════════════
+
+start_project.bat    → Démarrer tout
+stop_project.bat     → Arrêter tout
+check_status.bat     → Vérifier l'état
+
+backend/restart.bat  → Redémarrer le backend
+
+
+💡 ORDRE DE DÉMARRAGE
+═════════════════════
+
+1. Backend d'abord (port 8000)
+2. Frontend ensuite (port 4200)
+3. Attendez 30-60 secondes
+4. Ouvrez http://localhost:4200
+
+
+✅ VÉRIFICATION
+═══════════════
+
+Backend OK si vous voyez:
+   "Application startup complete"
+
+Frontend OK si vous voyez:
+   "Compiled successfully"
+
+
+🆘 EN CAS DE PROBLÈME
+═════════════════════
+
+Port déjà utilisé:
+   → Exécutez stop_project.bat
+   → Puis start_project.bat
+
+Module non trouvé:
+   → cd backend
+   → pip install -r requirements.txt
+   → cd ../frontEnd
+   → npm install
