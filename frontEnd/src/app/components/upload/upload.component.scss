@@ -49,8 +49,46 @@ nav {
     font-weight: 500;
     transition: color 0.2s;
 
-    &:hover {
-      color:#00013b;
+    &:hover,
+    &.active {
+      color: #00013b;
+      font-weight: 600;
+    }
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 1rem;
+    border-left: 1px solid #e2e8f0;
+
+    .user-name {
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .btn-logout {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+
+      &:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
     }
   }
 }
@@ -685,9 +723,9 @@ nav {
 
 .btn-secondary {
   background: white;
-  color: #2f0179;
+  color: #010125;
   padding: 1rem 2rem;
-  border: 2px solid #0c0022;
+  border: 2px solid #010125;
   border-radius: 10px;
   font-size: 1rem;
   font-weight: 600;
@@ -697,14 +735,15 @@ nav {
   flex: 1;
 
   &:hover {
-    background: #eff6ff;
+    background: #010125;
+    color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 4px 12px rgba(1, 1, 37, 0.3);
   }
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #200258 0%, #040263 100%);
+  background: #010125;
   color: white;
   padding: 1rem 2rem;
   border: none;
@@ -719,12 +758,12 @@ nav {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 12px rgba(1, 1, 37, 0.3);
 
   &:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    background: #3e0983;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 6px 16px rgba(62, 9, 131, 0.4);
   }
 
   .download-icon {

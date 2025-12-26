@@ -1,4 +1,7 @@
 <div class="landing-container">
+  <!-- Modal d'authentification -->
+  <app-auth *ngIf="showAuthModal" (close)="closeAuthModal()"></app-auth>
+
   <!-- Navigation -->
   <nav>
     <div class="nav-content">

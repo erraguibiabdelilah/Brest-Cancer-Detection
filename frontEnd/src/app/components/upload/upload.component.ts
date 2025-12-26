@@ -1,8 +1,10 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ApiService, PredictionResult } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
+import { HistoryService } from '../../services/history.service';
 import { jsPDF } from 'jspdf';
 
 @Component({
@@ -12,7 +14,7 @@ import { jsPDF } from 'jspdf';
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.scss'
 })
-export class UploadComponent {
+export class UploadComponent implements OnInit {
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   isUploading = false;
@@ -27,15 +29,28 @@ export class UploadComponent {
   patientId: string = '';
   modelVersion: string = 'ResNet50 v2.1';
   imageType: string = 'Histopathologie';
+  currentUser: any = null;
   private progressInterval: any = null;
   private progressStartTime: number = 0;
   private readonly MIN_PROGRESS_MS = 2000; // minimum animation duration
 
   constructor(
     private apiService: ApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private historyService: HistoryService
   ) {
     this.generatePatientId();
+  }
+
+  ngOnInit() {
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   private generatePatientId(): void {
@@ -231,6 +246,7 @@ export class UploadComponent {
         this.processingTime = `${elapsedSec}s`;
         this.result = result;
         this.loadingMessage = 'Analyse terminée';
+        this.saveAnalysisToHistory(result);
         this.cdr.detectChanges();
       }, 300);
     }, remaining);
@@ -518,5 +534,25 @@ Les paramètres analysés se situent dans les plages de référence pour des tis
   getCurrentDate(): string {
     const now = new Date();
     return `Analyse complétée le ${now.toLocaleDateString('fr-FR')} à ${now.toLocaleTimeString('fr-FR')}`;
+  }
+
+  private saveAnalysisToHistory(result: PredictionResult): void {
+    if (!this.currentUser || !this.selectedFile || !this.previewUrl) {
+      return;
+    }
+
+    this.historyService.addAnalysis({
+      fileName: this.selectedFile.name,
+      imageData: this.previewUrl, // base64 image data
+      imageDimensions: this.imageDimensions,
+      patientId: this.patientId,
+      modelVersion: this.modelVersion,
+      imageType: this.imageType,
+      result: {
+        label: result.label,
+        confidence: result.confidence
+      },
+      processingTime: this.processingTime
+    }, this.currentUser.email);
   }
 }
