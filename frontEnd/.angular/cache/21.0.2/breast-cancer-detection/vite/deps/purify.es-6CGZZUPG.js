@@ -1021,4 +1021,4 @@ var purify = createDOMPurify();
 export {
   purify as default
 };
-//# sourceMappingURL=purify.es-6USFSOGD.js.map
+//# sourceMappingURL=purify.es-6CGZZUPG.js.map

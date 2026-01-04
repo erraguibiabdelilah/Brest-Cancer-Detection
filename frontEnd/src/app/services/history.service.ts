@@ -16,6 +16,8 @@ export interface AnalysisHistory {
     confidence: number;
   };
   processingTime: string;
+  reportPdf?: string; // base64 du PDF généré (optionnel)
+  reportGenerated?: boolean; // Indique si le rapport a été généré
 }
 
 @Injectable({
@@ -86,6 +88,16 @@ export class HistoryService {
     const history = this.historySubject.value.filter(
       analysis => analysis.userId !== userId
     );
+    this.saveHistory(history);
+  }
+
+  updateAnalysis(analysisId: string, updates: Partial<AnalysisHistory>): void {
+    const history = this.historySubject.value.map(analysis => {
+      if (analysis.id === analysisId) {
+        return { ...analysis, ...updates };
+      }
+      return analysis;
+    });
     this.saveHistory(history);
   }
 

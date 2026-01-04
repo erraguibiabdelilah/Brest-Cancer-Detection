@@ -1,7 +1,6 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { ApiService, PredictionResult } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { HistoryService } from '../../services/history.service';
@@ -10,7 +9,7 @@ import { jsPDF } from 'jspdf';
 @Component({
   selector: 'app-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.scss'
 })
@@ -49,9 +48,6 @@ export class UploadComponent implements OnInit {
     });
   }
 
-  logout() {
-    this.authService.logout();
-  }
 
   private generatePatientId(): void {
     this.patientId = 'P' + Math.floor(Math.random() * 100000).toString().padStart(5, '0');
@@ -260,7 +256,7 @@ export class UploadComponent implements OnInit {
     // keep the last percentage until component hides; reset on reset()
   }
 
- generateMedicalReport(): void {
+  generateMedicalReport(): void {
   if (!this.result) return;
 
   const isPositive = this.isPositive();
@@ -268,6 +264,9 @@ export class UploadComponent implements OnInit {
   const currentDate = new Date();
   
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  
+  // Variable pour stocker le PDF en base64
+  let pdfBase64: string = '';
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 50;
@@ -491,10 +490,34 @@ Les paramètres analysés se situent dans les plages de référence pour des tis
   
   doc.text('Document confidentiel - Usage médical uniquement', pageWidth - margin, footerY + 28, { align: 'right' });
 
-  // Sauvegarde
+  // Générer le PDF en base64 pour sauvegarde
+  pdfBase64 = doc.output('datauristring');
+  
+  // Sauvegarder le rapport dans l'historique
+  this.saveReportToHistory(pdfBase64);
+
+  // Télécharger le fichier
   const filename = `Rapport_Medical_${this.patientId}_${currentDate.toISOString().split('T')[0]}.pdf`;
   doc.save(filename);
 }
+
+  private saveReportToHistory(pdfBase64: string): void {
+    if (!this.currentUser || !this.result) {
+      return;
+    }
+
+    // Trouver l'analyse la plus récente pour cet utilisateur avec le même patientId
+    const userHistory = this.historyService.getHistoryByUser(this.currentUser.email);
+    const latestAnalysis = userHistory.find(a => a.patientId === this.patientId);
+
+    if (latestAnalysis) {
+      // Mettre à jour l'analyse existante avec le rapport
+      this.historyService.updateAnalysis(latestAnalysis.id, {
+        reportPdf: pdfBase64,
+        reportGenerated: true
+      });
+    }
+  }
 
   reset(): void {
     this.selectedFile = null;
@@ -552,7 +575,8 @@ Les paramètres analysés se situent dans les plages de référence pour des tis
         label: result.label,
         confidence: result.confidence
       },
-      processingTime: this.processingTime
+      processingTime: this.processingTime,
+      reportGenerated: false // Le rapport sera généré plus tard si l'utilisateur le télécharge
     }, this.currentUser.email);
   }
 }

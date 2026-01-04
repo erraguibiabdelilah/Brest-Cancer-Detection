@@ -1,12 +1,14 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from './components/landing/landing.component';
-import { UploadComponent } from './components/upload/upload.component';
-import { HistoryComponent } from './components/history/history.component';
+import { Dashboard } from './components/dashboard/dashboard';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
-  { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
-  { path: 'history', component: HistoryComponent, canActivate: [AuthGuard] },
+  { 
+    path: 'dashboard', 
+    component: Dashboard, 
+    canActivate: [AuthGuard]
+  },
   { path: '**', redirectTo: '' }
 ];

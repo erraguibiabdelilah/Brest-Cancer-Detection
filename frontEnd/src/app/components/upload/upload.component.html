@@ -1,24 +1,5 @@
 
 <div class="upload-container">
-  <!-- Navigation -->
-  <nav>
-    <div class="nav-content">
-      <div class="logo">
-        <img src="logo2.png" width="60px" height="60px" alt="">
-        <span style="color: black;">Breast</span> <span style="color: rgb(1, 1, 110);">Care</span>
-      </div>
-      <ul class="nav-links">
-        <li><a routerLink="/">Accueil</a></li>
-        <li><a routerLink="/upload">Analyser</a></li>
-        <li><a routerLink="/history">Historique</a></li>
-        <li *ngIf="currentUser" class="user-info">
-          <span class="user-name">{{ currentUser.name || currentUser.email }}</span>
-          <button class="btn-logout" (click)="logout()">Déconnexion</button>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
   <!-- Main Container -->
   <div class="container">
     <div class="page-header">

@@ -1,0 +1,40 @@
+<div class="profile-container">
+  <div class="profile-content">
+    <div class="profile-header">
+      <h1>Mon Profil</h1>
+      <p>Gérez vos informations personnelles</p>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-avatar">
+        <div class="avatar-circle">
+          <span class="avatar-text">{{ getInitials() }}</span>
+        </div>
+      </div>
+
+      <div class="profile-info">
+        <div class="info-section">
+          <label class="info-label">Nom</label>
+          <div class="info-value">{{ currentUser?.name || 'Non renseigné' }}</div>
+        </div>
+
+        <div class="info-section">
+          <label class="info-label">Email</label>
+          <div class="info-value">{{ currentUser?.email || 'Non renseigné' }}</div>
+        </div>
+
+        <div class="info-section">
+          <label class="info-label">Date d'inscription</label>
+          <div class="info-value">{{ getRegistrationDate() }}</div>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="btn-logout" (click)="logout()">
+          <span class="logout-icon">🚪</span>
+          Déconnexion
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

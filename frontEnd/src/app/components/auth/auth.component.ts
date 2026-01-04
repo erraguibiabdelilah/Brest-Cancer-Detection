@@ -71,28 +71,22 @@ export class AuthComponent {
       }
 
       // Signup
-      const success = await this.authService.signup(this.email, this.password, this.name);
-      if (success) {
-        // Afficher un message de succès et basculer vers le mode login
-        this.successMessage = 'Compte créé avec succès ! Connectez-vous maintenant.';
-        this.isLoginMode = true;
-        // Conserver l'email mais réinitialiser les autres champs
-        const savedEmail = this.email;
-        this.email = savedEmail;
-        this.password = '';
-        this.name = '';
-        this.confirmPassword = '';
+      const result = await this.authService.signup(this.email, this.password, this.name);
+      if (result.success) {
+        // L'utilisateur est automatiquement connecté, rediriger vers le dashboard
+        this.router.navigate(['/dashboard']);
+        this.closeModal();
       } else {
-        this.error = 'Cet email est déjà utilisé';
+        this.error = result.error || 'Cet email est déjà utilisé';
       }
     } else {
       // Mode login
-      const success = await this.authService.login(this.email, this.password);
-      if (success) {
-        this.router.navigate(['/upload']);
+      const result = await this.authService.login(this.email, this.password);
+      if (result.success) {
+        this.router.navigate(['/dashboard']);
         this.closeModal();
       } else {
-        this.error = 'Email ou mot de passe incorrect';
+        this.error = result.error || 'Email ou mot de passe incorrect';
       }
     }
 
