@@ -4,7 +4,7 @@
     <div class="page-header">
       <div class="header-content">
         <div>
-          <h1>Historique des Analyses</h1>
+          <h2>Historique des Analyses</h2>
           <p>Consultez toutes vos analyses précédentes</p>
         </div>
         <button *ngIf="analyses.length > 0" class="btn-clear" (click)="clearAll()">
@@ -24,7 +24,7 @@
       <div class="empty-icon">📋</div>
       <h2>Aucune analyse enregistrée</h2>
       <p>Vous n'avez pas encore effectué d'analyses. Commencez par analyser une image !</p>
-      <button class="btn-primary" (click)="navigateToAnalyse()">Effectuer une analyse</button>
+      
     </div>
 
     <!-- History List -->
@@ -49,9 +49,9 @@
           </div>
 
           <div class="card-details">
-            <div class="result-badge" [class.positive]="isPositive(analysis.result.label)" [class.negative]="!isPositive(analysis.result.label)">
-              <span class="badge-icon">{{ isPositive(analysis.result.label) ? '⚠️' : '✅' }}</span>
-              <span class="badge-text">{{ isPositive(analysis.result.label) ? 'POSITIF' : 'NÉGATIF' }}</span>
+            <div class="result-badge" [class.positive]="getConfidencePercentage(analysis.result.confidence) >= 50" [class.negative]="getConfidencePercentage(analysis.result.confidence) < 50">
+              <span class="badge-icon">{{ getConfidencePercentage(analysis.result.confidence) >= 50 ? '⚠️' : '✅' }}</span>
+              <span class="badge-text">{{ getConfidencePercentage(analysis.result.confidence) >= 50 ? 'POSITIF' : 'NÉGATIF' }}</span>
             </div>
 
             <div class="detail-grid">
@@ -63,14 +63,8 @@
                 <span class="detail-label">ID Patient</span>
                 <span class="detail-value">{{ analysis.patientId }}</span>
               </div>
-              <div class="detail-item">
-                <span class="detail-label">Dimensions</span>
-                <span class="detail-value">{{ analysis.imageDimensions }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Temps de traitement</span>
-                <span class="detail-value">{{ analysis.processingTime }}</span>
-              </div>
+           
+             
               <div class="detail-item">
                 <span class="detail-label">Modèle</span>
                 <span class="detail-value">{{ analysis.modelVersion }}</span>
@@ -90,7 +84,9 @@
                 *ngIf="analysis.reportGenerated && analysis.reportPdf" 
                 class="btn-download-report" 
                 (click)="downloadReport(analysis)">
-                <span class="download-icon">📥</span>
+                <span class="download-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6"/>
+</svg></span>
                 Télécharger le rapport PDF
               </button>
               <span *ngIf="!analysis.reportGenerated" class="no-report-message">

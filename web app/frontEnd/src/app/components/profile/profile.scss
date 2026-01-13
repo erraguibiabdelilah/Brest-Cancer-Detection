@@ -99,7 +99,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background-color: #ef4444;
+  background-color: #550299;
   color: white;
   border: none;
   border-radius: 8px;
@@ -109,9 +109,9 @@
   transition: all 0.2s;
 
   &:hover {
-    background-color: #dc2626;
+    background-color: #920292;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 4px 12px rgba(16, 0, 104, 0.3);
   }
 
   &:active {

@@ -23,10 +23,10 @@ export class Dashboard implements OnInit {
   showMobileMenu: boolean = false;
   
   navItems = [
-    { id: 'dashboard', icon: '📊', label: 'Dashboard' },
-    { id: 'historique', icon: '🕐', label: 'Historique' },
-    { id: 'analyse', icon: '🔍', label: 'Analyse' },
-    { id: 'profile', icon: '👤', label: 'Profile' }
+    { id: 'dashboard', icon: 'icons/dash.png', label: 'Dashboard' },
+    { id: 'historique', icon: 'icons/hist.png', label: 'Historique' },
+    { id: 'analyse', icon: 'icons/analyse.png', label: 'Analyse' },
+    { id: 'profile', icon: 'icons/profile.png', label: 'Profile' }
   ];
 
   constructor(

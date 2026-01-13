@@ -92,8 +92,9 @@
           <div class="analysis-date">{{ getCurrentDate() }}</div>
         </div>
         <button class="btn-download" (click)="generateMedicalReport()">
-          <span class="download-icon"><img src="dowload.png" 
-           width="30px" height="30px" color="white" alt=""></span>
+          <span class="download-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6"/>
+</svg></span>
           Télécharger le rapport
         </button>
       </div>
@@ -110,39 +111,25 @@
         </div>
         
         <div class="result-card">
-          <div class="result-icon">📊</div>
+          <div class="result-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+  <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z"/><path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0"/></svg>
+        </div>
           <div class="result-label">Score de confiance</div>
           <div class="result-value">{{ getConfidencePercentage() }}%</div>
           <div class="result-description">Fiabilité de l'analyse</div>
         </div>
-        
-        <div class="result-card">
-          <div class="result-icon">⏱️</div>
-          <div class="result-label">Temps de traitement</div>
-          <div class="result-value">{{ processingTime }}</div>
-          <div class="result-description">Durée de l'analyse</div>
-        </div>
 
         <div class="result-card">
-          <div class="result-icon">🆔</div>
+          <div class="result-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-bounding-box" viewBox="0 0 16 16">
+  <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5M.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5"/>
+  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+</svg></div>
           <div class="result-label">ID Patient</div>
           <div class="result-value">{{ patientId }}</div>
           <div class="result-description">Identifiant unique</div>
         </div>
 
-        <div class="result-card">
-          <div class="result-icon">🔬</div>
-          <div class="result-label">Type d'examen</div>
-          <div class="result-value-small">{{ imageType }}</div>
-          <div class="result-description">{{ modelVersion }}</div>
-        </div>
 
-        <div class="result-card">
-          <div class="result-icon">📐</div>
-          <div class="result-label">Dimensions</div>
-          <div class="result-value-small">{{ imageDimensions }}</div>
-          <div class="result-description">Résolution de l'image</div>
-        </div>
       </div>
 
       <!-- Detailed Findings -->
@@ -190,9 +177,9 @@
       <div class="action-buttons">
         <button class="btn-secondary" (click)="reset()">Nouvelle analyse</button>
         <button class="btn-primary" (click)="generateMedicalReport()">
-          <span class="download-icon"><img src="dowload.png" 
-           width="30px" height="30px" color="white" alt=""></span>
-        
+          <span class="download-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6"/>
+</svg></span>
           Télécharger le rapport complet
         </button>
       </div>

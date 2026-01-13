@@ -28,6 +28,7 @@ export class HistoryComponent implements OnInit {
       } else {
         this.analyses = [];
         this.isLoading = false;
+        
       }
     });
   }
@@ -51,8 +52,8 @@ export class HistoryComponent implements OnInit {
     }
   }
 
-  getConfidencePercentage(confidence: number): string {
-    return (confidence * 100).toFixed(1);
+  getConfidencePercentage(confidence: number): number {
+    return parseFloat((confidence * 100).toFixed(1));
   }
 
   isPositive(label: string): boolean {

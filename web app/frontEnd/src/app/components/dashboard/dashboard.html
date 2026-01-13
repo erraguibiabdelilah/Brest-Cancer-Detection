@@ -11,7 +11,8 @@
           [class.active]="activePage === item.id"
           class="nav-button"
           [title]="item.label">
-          <span class="nav-icon">{{ item.icon }}</span>
+          <!--<span class="nav-icon">{{ item.icon }}</span>-->
+          <img class="nav-icon" [src]="item.icon" alt="icon" width="25px " height="25px">
         </button>
         
         <!-- Tooltip -->
@@ -44,7 +45,8 @@
         <button
           [class.active]="activePage === item.id"
           class="mobile-nav-button">
-          <span class="mobile-nav-icon">{{ item.icon }}</span>
+          
+          <img  class="mobile-nav-icon" [src]="item.icon" alt="icon" width="25" height="25">
           <span class="mobile-nav-label">{{ item.label }}</span>
         </button>
       </div>
@@ -90,7 +92,10 @@
             </div>
             <div class="dropdown-divider"></div>
             <button class="dropdown-item logout-item" (click)="logout()">
-              <span class="dropdown-icon">🚪</span>
+              <span class="dropdown-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+  <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+</svg></span>
               <span>Déconnexion</span>
             </button>
           </div>
@@ -143,10 +148,10 @@
                   <td>{{ analysis.patientId }}</td>
                   <td>{{ analysis.fileName }}</td>
                   <td>
-                    <span [class.positive]="analysis.result.label.toLowerCase().includes('positif') || analysis.result.label.toLowerCase().includes('cancer')"
-                          [class.negative]="!(analysis.result.label.toLowerCase().includes('positif') || analysis.result.label.toLowerCase().includes('cancer'))"
+                    <span [class.positive]=" analysis.result.confidence >= 0.5"
+                          [class.negative]=" analysis.result.confidence < 0.5"
                           class="result-badge">
-                      {{ analysis.result.label.toLowerCase().includes('positif') || analysis.result.label.toLowerCase().includes('cancer') ? 'POSITIF' : 'NÉGATIF' }}
+                      {{ analysis.result.confidence >= 0.5 ? 'POSITIF' : 'NÉGATIF' }}
                     </span>
                   </td>
                   <td>{{ (analysis.result.confidence > 1 ? analysis.result.confidence : analysis.result.confidence * 100) | number:'1.0-0' }}%</td>
