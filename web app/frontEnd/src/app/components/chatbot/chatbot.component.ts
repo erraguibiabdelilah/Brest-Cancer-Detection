@@ -78,13 +78,22 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     this.chatbotService.sendMessage(message).subscribe({
       next: () => {
         this.isLoading = false;
+        this.errorMessage = ''; // Effacer les erreurs précédentes
         this.cdr.detectChanges(); // Forcer la mise à jour de l'affichage
         this.scrollToBottom();
         this.focusInput();
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = error;
+        // Afficher un message d'erreur plus informatif
+        if (typeof error === 'string') {
+          this.errorMessage = error;
+        } else if (error?.message) {
+          this.errorMessage = error.message;
+        } else {
+          this.errorMessage = 'Erreur lors de la communication avec le serveur. Vérifiez que le backend est démarré.';
+        }
+        console.error('❌ [ChatbotComponent] Erreur:', error);
         this.cdr.detectChanges(); // Forcer la mise à jour de l'affichage
         this.scrollToBottom();
       }

@@ -12,6 +12,17 @@ DB_NAME=Bcancer
 
 # Clé secrète pour JWT (changez-la en production!)
 JWT_SECRET_KEY=votre-cle-secrete-tres-longue-et-aleatoire-changez-en-production
+
+# Configuration Azure AI Inference pour le chatbot
+# Option 1: GitHub Models (recommandé)
+GITHUB_TOKEN=votre_token_github_ici
+AZURE_AI_INFERENCE_ENDPOINT=https://models.github.ai/inference/chat/completions
+AZURE_AI_INFERENCE_MODEL=openai/gpt-4.1-mini
+
+# Option 2: Azure OpenAI standard
+# AZURE_AI_INFERENCE_API_KEY=votre_cle_api_azure
+# AZURE_AI_INFERENCE_ENDPOINT=https://votre-resource.openai.azure.com
+# AZURE_AI_INFERENCE_MODEL=gpt-4
 ```
 
 ## Instructions de configuration

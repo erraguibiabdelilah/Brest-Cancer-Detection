@@ -2,11 +2,14 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, status, R
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, EmailStr
+from fastapi.exceptions import RequestValidationError
+from fastapi.exception_handlers import request_validation_exception_handler
+from pydantic import BaseModel, Field, EmailStr, ValidationError
 from typing import Optional, List
 from datetime import timedelta
 from script import predict_from_bytes
 from flashcard_service import generate_flashcards, FlashCard, FlashCardConfig
+from chatbot_service import generate_chatbot_response
 from database import init_database
 from auth import (
     create_user, authenticate_user, create_access_token, 
@@ -34,6 +37,19 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+# Handler pour les erreurs de validation
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    logger.error(f"❌ Erreur de validation pour {request.url}")
+    logger.error(f"❌ Détails: {exc.errors()}")
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": exc.errors(),
+            "message": "Erreur de validation des données. Vérifiez le format de votre requête."
+        }
+    )
 
 # Middleware pour logger les requêtes
 @app.middleware("http")
@@ -265,3 +281,68 @@ async def generate_flashcards_endpoint(request: FlashCardRequest):
         error_msg = str(e)
         print(f"Erreur dans /flashcards: {error_msg}")
         raise HTTPException(status_code=500, detail=f"Erreur lors de la génération des flashcards: {error_msg}")
+
+# ========== MODÈLES POUR LE CHATBOT ==========
+
+class ChatMessageHistory(BaseModel):
+    role: str = Field(..., description="Rôle du message (user, assistant, system)")
+    content: str = Field(..., description="Contenu du message")
+
+class ChatbotRequest(BaseModel):
+    message: str = Field(..., description="Le message de l'utilisateur", min_length=1)
+    conversation_history: Optional[List[ChatMessageHistory]] = Field(default=None, description="Historique de conversation")
+    temperature: Optional[float] = Field(default=0.9, ge=0.0, le=2.0, description="Température pour la génération (0.0-2.0)")
+    max_tokens: Optional[int] = Field(default=800, ge=1, le=4000, description="Nombre maximum de tokens dans la réponse")
+
+class ChatbotResponse(BaseModel):
+    response: str = Field(..., description="La réponse du chatbot")
+    success: bool = Field(default=True, description="Indique si la requête a réussi")
+
+@app.post("/chatbot", response_model=ChatbotResponse)
+async def chatbot_endpoint(request: ChatbotRequest):
+    """
+    Endpoint pour le chatbot médical
+    Utilise Azure AI Inference API pour générer des réponses intelligentes
+    """
+    try:
+        logger.info(f"📥 [Chatbot] Requête reçue - Message: {request.message[:50]}...")
+        logger.info(f"📥 [Chatbot] Historique: {len(request.conversation_history or [])} messages")
+        logger.info(f"📥 [Chatbot] Temperature: {request.temperature}, Max tokens: {request.max_tokens}")
+        
+        # Convertir l'historique en format dict si nécessaire
+        conversation_history = None
+        if request.conversation_history and len(request.conversation_history) > 0:
+            conversation_history = [
+                {"role": msg.role, "content": msg.content} 
+                for msg in request.conversation_history
+                if msg.role and msg.content  # Filtrer les messages invalides
+            ]
+            logger.info(f"📥 [Chatbot] Historique converti: {len(conversation_history)} messages valides")
+        
+        # Générer la réponse du chatbot
+        response_text = generate_chatbot_response(
+            user_message=request.message,
+            conversation_history=conversation_history,
+            temperature=request.temperature or 0.9,
+            max_tokens=request.max_tokens or 800
+        )
+        
+        logger.info(f"✅ [Chatbot] Réponse générée avec succès")
+        
+        return ChatbotResponse(
+            response=response_text,
+            success=True
+        )
+        
+    except ValueError as e:
+        # Erreur de configuration ou de parsing
+        error_msg = str(e)
+        logger.error(f"❌ [Chatbot] Erreur ValueError: {error_msg}")
+        raise HTTPException(status_code=400, detail=error_msg)
+    except Exception as e:
+        # Autres erreurs
+        error_msg = str(e)
+        logger.error(f"❌ [Chatbot] Erreur: {error_msg}")
+        import traceback
+        logger.error(f"❌ [Chatbot] Traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la génération de la réponse: {error_msg}")

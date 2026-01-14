@@ -49,11 +49,18 @@ export class AuthService {
     if (token && userStr) {
       try {
         const user = JSON.parse(userStr);
+        // Initialiser temporairement avec les données du localStorage pour éviter le flash de redirection
+        this.isAuthenticatedSubject.next(true);
+        this.currentUserSubject.next(user);
+        
         // Vérifier si le token est toujours valide en appelant l'API
         this.verifyToken(token).subscribe({
           next: (userData) => {
+            // Mettre à jour avec les données du serveur
             this.isAuthenticatedSubject.next(true);
             this.currentUserSubject.next(userData);
+            // Mettre à jour le localStorage avec les données fraîches
+            localStorage.setItem('currentUser', JSON.stringify(userData));
           },
           error: () => {
             // Token invalide, déconnecter l'utilisateur
@@ -63,6 +70,10 @@ export class AuthService {
       } catch (e) {
         this.logout();
       }
+    } else {
+      // Pas de token, s'assurer que l'état est bien à false
+      this.isAuthenticatedSubject.next(false);
+      this.currentUserSubject.next(null);
     }
   }
 
@@ -144,7 +155,12 @@ export class AuthService {
             if (error.status === 0) {
               errorMessage = 'Impossible de se connecter au serveur. Vérifiez que le serveur backend est démarré sur http://localhost:8000';
             } else if (error.status === 400) {
-              errorMessage = error?.error?.detail || 'Cet email est déjà utilisé';
+              const detail = error?.error?.detail || '';
+              if (detail.includes('déjà utilisé') || detail.includes('already')) {
+                errorMessage = 'Cet email est déjà utilisé. Voulez-vous vous connecter à la place ?';
+              } else {
+                errorMessage = detail || 'Erreur lors de l\'inscription. Veuillez vérifier vos informations.';
+              }
             } else if (error.status >= 500) {
               errorMessage = 'Erreur serveur. Veuillez réessayer plus tard.';
             } else if (error?.error?.detail) {

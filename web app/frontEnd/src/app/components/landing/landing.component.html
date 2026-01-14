@@ -10,13 +10,32 @@
         <span style="color: black;">Breast</span> <span style="color: rgb(1, 1, 110);">Care</span>
       </div>
       <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#about">About</a></li>
+        <li><a href="#home" (click)="closeMobileMenu()">Home</a></li>
+        <li><a href="#features" (click)="closeMobileMenu()">Features</a></li>
+        <li><a href="#about" (click)="closeMobileMenu()">About</a></li>
         <li><button class="btn-nav" (click)="getStarted()">Get Started</button></li>
       </ul>
+      <!-- Menu hamburger pour mobile -->
+      <button class="hamburger-menu" (click)="toggleMobileMenu()" [class.active]="showMobileMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Menu mobile overlay -->
+  <div class="mobile-menu-overlay" *ngIf="showMobileMenu" (click)="closeMobileMenu()"></div>
+
+  <!-- Menu mobile -->
+  <div class="mobile-menu" [class.open]="showMobileMenu">
+    <ul class="mobile-nav-links">
+      <li><a href="#home" (click)="closeMobileMenu()">Home</a></li>
+      <li><a href="#features" (click)="closeMobileMenu()">Features</a></li>
+      <li><a href="#about" (click)="closeMobileMenu()">About</a></li>
+      <li><button class="btn-nav-mobile" (click)="getStarted(); closeMobileMenu()">Get Started</button></li>
+    </ul>
+  </div>
 
   <!-- Hero Section -->
   <section class="hero" id="home">
