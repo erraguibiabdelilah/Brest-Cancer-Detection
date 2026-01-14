@@ -71,42 +71,22 @@ export class AuthComponent {
       }
 
       // Signup
-      try {
-        const result = await this.authService.signup(this.email, this.password, this.name);
-        if (result.success) {
-          // L'utilisateur est automatiquement connecté, rediriger vers le dashboard
-          this.successMessage = 'Inscription réussie ! Redirection...';
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-            this.closeModal();
-          }, 500);
-        } else {
-          this.error = result.error || 'Erreur lors de l\'inscription. Cet email est peut-être déjà utilisé.';
-          // Si l'email est déjà utilisé, suggérer de se connecter
-          if (result.error && (result.error.includes('déjà utilisé') || result.error.includes('already'))) {
-            // L'erreur sera affichée avec un message suggérant de se connecter
-          }
-        }
-      } catch (err: any) {
-        console.error('Erreur d\'inscription:', err);
-        this.error = err?.error?.detail || err?.message || 'Erreur lors de l\'inscription. Veuillez réessayer.';
+      const result = await this.authService.signup(this.email, this.password, this.name);
+      if (result.success) {
+        // L'utilisateur est automatiquement connecté, rediriger vers le dashboard
+        this.router.navigate(['/dashboard']);
+        this.closeModal();
+      } else {
+        this.error = result.error || 'Cet email est déjà utilisé';
       }
     } else {
       // Mode login
-      try {
-        const result = await this.authService.login(this.email, this.password);
-        if (result.success) {
-          this.successMessage = 'Connexion réussie ! Redirection...';
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-            this.closeModal();
-          }, 500);
-        } else {
-          this.error = result.error || 'Email ou mot de passe incorrect';
-        }
-      } catch (err: any) {
-        console.error('Erreur de connexion:', err);
-        this.error = err?.error?.detail || err?.message || 'Erreur lors de la connexion. Veuillez réessayer.';
+      const result = await this.authService.login(this.email, this.password);
+      if (result.success) {
+        this.router.navigate(['/dashboard']);
+        this.closeModal();
+      } else {
+        this.error = result.error || 'Email ou mot de passe incorrect';
       }
     }
 

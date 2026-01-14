@@ -10,30 +10,44 @@ export interface ChatMessage {
   timestamp?: Date;
 }
 
-export interface ChatbotAPIRequest {
-  message: string;
-  conversation_history?: Array<{
-    role: string;
-    content: string;
+export interface AzureAIResponse {
+  choices: Array<{
+    message: {
+      role: string;
+      content: string;
+    };
+    finish_reason: string;
   }>;
-  temperature?: number;
-  max_tokens?: number;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
 }
 
-export interface ChatbotAPIResponse {
-  response: string;
-  success: boolean;
+export interface AzureAIError {
+  error: {
+    message: string;
+    type: string;
+    code: string;
+  };
 }
+
+// ============================================
+// VARIABLE GLOBALE - CONFIGUREZ VOTRE TOKEN ICI
+// ============================================
+export const GITHUB_TOKEN = 'VOTRE_GITHUB_TOKEN_ICI';
+// ============================================
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatbotService {
-  // Configuration de l'API backend
-  private readonly API_URL = 'http://localhost:8000';
-  private readonly CHATBOT_ENDPOINT = `${this.API_URL}/chatbot`;
+  // Configuration Azure AI Inference via GitHub Models
+  private readonly ENDPOINT = 'https://models.github.ai/inference/chat/completions';
+  private readonly MODEL = 'openai/gpt-4.1-mini';
   
-  private useLocalFallback = true; // Utiliser le mode local (statique) par défaut
+  private useLocalFallback = false; // Mettre à true si vous voulez utiliser le mode local par défaut
 
   // Historique de conversation (en mémoire)
   private conversationHistory: ChatMessage[] = [];
@@ -83,61 +97,56 @@ export class ChatbotService {
         return;
       }
 
-      // Appel à l'API backend
-      this.callBackendAPI(observer, userMessage);
+      // Vérifier que le token est configuré
+      if (!GITHUB_TOKEN || GITHUB_TOKEN === 'VOTRE_GITHUB_TOKEN_ICI') {
+        console.warn('Token GitHub non configuré, utilisation du mode local');
+        this.processLocalResponse(userMessage, observer);
+        return;
+      }
+
+      // Appel à l'API Azure AI Inference
+      this.callAzureAI(observer, userMessage);
     });
   }
 
   /**
-   * Appel à l'API backend pour obtenir une réponse du chatbot
+   * Appel à l'API Azure AI Inference via GitHub Models
    */
-  private callBackendAPI(observer: any, userMessage: string): void {
+  private callAzureAI(observer: any, userMessage: string): void {
     const headers = new HttpHeaders({
+      'Authorization': `Bearer ${GITHUB_TOKEN}`,
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     });
 
-    // Préparer l'historique de conversation (sans le message système et sans le dernier message utilisateur qui est déjà dans le champ 'message')
-    const conversationHistory = this.conversationHistory
-      .filter(msg => msg.role !== 'system')
-      .slice(0, -1) // Exclure le dernier message (celui qu'on vient d'ajouter)
-      .map(msg => ({
+    const body = {
+      messages: this.conversationHistory.map(msg => ({
         role: msg.role,
         content: msg.content
-      }));
-
-    const body: ChatbotAPIRequest = {
-      message: userMessage,
-      conversation_history: conversationHistory,
-      temperature: 0.9,
+      })),
+      model: this.MODEL,
+      temperature: 1.0,
+      top_p: 1.0,
       max_tokens: 800
     };
 
-    console.log('📤 [ChatbotService] Envoi de la requête à:', this.CHATBOT_ENDPOINT);
-    console.log('📤 [ChatbotService] Corps de la requête:', JSON.stringify(body, null, 2));
-    console.log('📤 [ChatbotService] Headers:', headers.keys());
-
-    this.http.post<ChatbotAPIResponse>(this.CHATBOT_ENDPOINT, body, { headers })
+    this.http.post<AzureAIResponse>(this.ENDPOINT, body, { headers })
       .subscribe({
         next: (response) => {
-          this.handleBackendSuccess(response, observer);
+          this.handleAzureAISuccess(response, observer);
         },
         error: (error) => {
-          this.handleBackendError(error, userMessage, observer);
+          this.handleAzureAIError(error, userMessage, observer);
         }
       });
   }
 
   /**
-   * Traite une réponse réussie de l'API backend
+   * Traite une réponse réussie de l'API Azure AI
    */
-  private handleBackendSuccess(response: ChatbotAPIResponse, observer: any): void {
-    console.log('✅ [ChatbotService] Réponse reçue du backend:', response);
-    
-    if (response.success && response.response) {
-      const assistantMessage = response.response;
-      
-      console.log('✅ [ChatbotService] Réponse du chatbot (dynamique):', assistantMessage.substring(0, 100) + '...');
+  private handleAzureAISuccess(response: AzureAIResponse, observer: any): void {
+    if (response.choices && response.choices.length > 0) {
+      const assistantMessage = response.choices[0].message.content;
       
       const assistantMsg: ChatMessage = {
         role: 'assistant',
@@ -151,78 +160,46 @@ export class ChatbotService {
       observer.next(assistantMessage);
       observer.complete();
     } else {
-      console.error('❌ [ChatbotService] Réponse backend invalide:', response);
+      console.error('Réponse Azure AI invalide:', response);
       observer.error('Aucune réponse reçue du chatbot');
     }
   }
 
   /**
-   * Gère les erreurs de l'API backend
+   * Gère les erreurs de l'API Azure AI
    */
-  private handleBackendError(error: any, userMessage: string, observer: any): void {
-    console.error('❌ [ChatbotService] Erreur API backend:', error);
-    console.error('❌ [ChatbotService] URL:', this.CHATBOT_ENDPOINT);
-    console.error('❌ [ChatbotService] Status:', error.status);
-    console.error('❌ [ChatbotService] Status Text:', error.statusText);
+  private handleAzureAIError(error: any, userMessage: string, observer: any): void {
+    console.error('Erreur API Azure AI:', error);
     
     // Afficher plus de détails sur l'erreur
     if (error.error) {
-      console.error('❌ [ChatbotService] Détails de l\'erreur:', error.error);
+      console.error('Détails de l\'erreur:', error.error);
     }
     
-    // Vérifier si c'est une erreur de connexion (backend non démarré)
-    if (error.status === 0 || error.status === undefined) {
-      console.error('❌ [ChatbotService] Le backend ne semble pas être démarré ou inaccessible');
-      observer.error('Impossible de se connecter au serveur. Vérifiez que le backend est démarré sur http://localhost:8000');
-      return;
-    }
-    
-    // Basculer vers le mode local uniquement pour certaines erreurs
-    // Ne pas utiliser le fallback pour les erreurs de connexion
-    if (error.status >= 500 || (error.status >= 400 && error.status !== 404)) {
-      console.warn('⚠️ [ChatbotService] Basculement vers le mode local (fallback)');
-      this.processLocalResponse(userMessage, observer);
-    } else {
-      observer.error(`Erreur lors de la communication avec le serveur: ${error.statusText || 'Erreur inconnue'}`);
-    }
+    // Basculer vers le mode local en cas d'erreur
+    console.warn('Basculement vers le mode local');
+    this.processLocalResponse(userMessage, observer);
   }
 
   /**
-   * Traite une réponse avec le service local (fallback)
+   * Traite une réponse avec le service local
    */
   private processLocalResponse(userMessage: string, observer: any): void {
-    console.warn('⚠️ [ChatbotService] Utilisation du service local (statique) comme fallback');
-    
     this.ngZone.run(() => {
       setTimeout(() => {
-        try {
-          const assistantMessage = this.localService.generateResponse(userMessage);
-          
-          // Vérifier que la réponse n'est pas undefined ou vide
-          if (!assistantMessage || typeof assistantMessage !== 'string') {
-            console.error('❌ [ChatbotService] Réponse locale invalide:', assistantMessage);
-            observer.error('Impossible de générer une réponse. Veuillez réessayer.');
-            return;
-          }
-          
-          const preview = assistantMessage.length > 100 ? assistantMessage.substring(0, 100) + '...' : assistantMessage;
-          console.log('📝 [ChatbotService] Réponse locale générée:', preview);
-          
-          const assistantMsg: ChatMessage = {
-            role: 'assistant',
-            content: assistantMessage,
-            timestamp: new Date()
-          };
-          
-          this.conversationHistory.push(assistantMsg);
-          this.messageSubject.next(assistantMsg);
-          
-          observer.next(assistantMessage);
-          observer.complete();
-        } catch (error) {
-          console.error('❌ [ChatbotService] Erreur dans processLocalResponse:', error);
-          observer.error('Erreur lors de la génération de la réponse locale.');
-        }
+        const assistantMessage = this.localService.generateResponse(userMessage);
+        
+        const assistantMsg: ChatMessage = {
+          role: 'assistant',
+          content: assistantMessage,
+          timestamp: new Date()
+        };
+        
+        this.conversationHistory.push(assistantMsg);
+        this.messageSubject.next(assistantMsg);
+        
+        observer.next(assistantMessage);
+        observer.complete();
       }, 500);
     });
   }
@@ -260,11 +237,10 @@ export class ChatbotService {
   }
 
   /**
-   * Vérifie si l'API backend est disponible
+   * Vérifie si l'API est configurée correctement
    */
   isAPIConfigured(): boolean {
-    // L'API backend est toujours considérée comme configurée
-    // Le fallback local sera utilisé en cas d'erreur
-    return true;
+    return GITHUB_TOKEN !== 'VOTRE_GITHUB_TOKEN_ICI' && 
+           GITHUB_TOKEN !== '';
   }
 }

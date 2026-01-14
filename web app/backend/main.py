@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field, EmailStr, ValidationError
 from typing import Optional, List
 from datetime import timedelta
 from script import predict_from_bytes
-from flashcard_service import generate_flashcards, FlashCard, FlashCardConfig
 from chatbot_service import generate_chatbot_response
 from database import init_database
 from auth import (
@@ -244,43 +243,6 @@ class FlashCardResponse(BaseModel):
     flashcards: List[dict] = Field(..., description="Liste des flashcards générées")
     total: int = Field(..., description="Nombre total de flashcards générées")
 
-@app.post("/flashcards", response_model=FlashCardResponse)
-async def generate_flashcards_endpoint(request: FlashCardRequest):
-    """
-    Endpoint pour générer des flashcards à partir d'un texte
-    Utilise Google Gemini API (gratuit, 60 requêtes par minute)
-    """
-    try:
-        # Créer la configuration
-        config = FlashCardConfig()
-        if request.max_question_words:
-            config.set_max_question_words(request.max_question_words)
-        if request.max_answer_words:
-            config.set_max_answer_words(request.max_answer_words)
-        if request.number_of_cards:
-            config.set_number_of_cards(request.number_of_cards)
-        if request.temperature is not None:
-            config.set_temperature(request.temperature)
-        
-        # Générer les flashcards
-        flash_cards = generate_flashcards(request.text, config)
-        
-        # Convertir en format JSON
-        flashcards_data = [card.to_dict() for card in flash_cards]
-        
-        return FlashCardResponse(
-            flashcards=flashcards_data,
-            total=len(flashcards_data)
-        )
-        
-    except ValueError as e:
-        # Erreur de configuration ou de parsing
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        # Autres erreurs
-        error_msg = str(e)
-        print(f"Erreur dans /flashcards: {error_msg}")
-        raise HTTPException(status_code=500, detail=f"Erreur lors de la génération des flashcards: {error_msg}")
 
 # ========== MODÈLES POUR LE CHATBOT ==========
 

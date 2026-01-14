@@ -91,12 +91,11 @@
           <h2>Résultats de l'analyse</h2>
           <div class="analysis-date">{{ getCurrentDate() }}</div>
         </div>
-        <button class="btn-download" (click)="generateMedicalReport()" [disabled]="isGeneratingReport">
-          <span class="download-icon" *ngIf="!isGeneratingReport"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+        <button class="btn-download" (click)="generateMedicalReport()">
+          <span class="download-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6"/>
 </svg></span>
-          <span *ngIf="isGeneratingReport" class="spinner">⏳</span>
-          {{ isGeneratingReport ? 'Génération en cours...' : 'Télécharger le rapport' }}
+          Télécharger le rapport
         </button>
       </div>
 
@@ -177,12 +176,11 @@
       <!-- Action Buttons -->
       <div class="action-buttons">
         <button class="btn-secondary" (click)="reset()">Nouvelle analyse</button>
-        <button class="btn-primary" (click)="generateMedicalReport()" [disabled]="isGeneratingReport">
-          <span class="download-icon" *ngIf="!isGeneratingReport"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+        <button class="btn-primary" (click)="generateMedicalReport()">
+          <span class="download-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6"/>
 </svg></span>
-          <span *ngIf="isGeneratingReport" class="spinner">⏳</span>
-          {{ isGeneratingReport ? 'Génération en cours...' : 'Télécharger le rapport complet' }}
+          Télécharger le rapport complet
         </button>
       </div>
     </div>

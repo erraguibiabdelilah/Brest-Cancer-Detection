@@ -7,9 +7,8 @@
            (mouseenter)="setHoveredItem(item.id)"
            (mouseleave)="setHoveredItem(null)">
         <button
-          [routerLink]="item.route"
-          routerLinkActive="active"
-          [class.active]="isActiveRoute(item.id)"
+          (click)="setActivePage(item.id)"
+          [class.active]="activePage === item.id"
           class="nav-button"
           [title]="item.label">
           <!--<span class="nav-icon">{{ item.icon }}</span>-->
@@ -17,7 +16,7 @@
         </button>
         
         <!-- Tooltip -->
-        <div *ngIf="hoveredItem === item.id && !isActiveRoute(item.id)" class="tooltip">
+        <div *ngIf="hoveredItem === item.id && activePage !== item.id" class="tooltip">
           {{ item.label }}
         </div>
       </div>
@@ -42,11 +41,9 @@
     <div class="mobile-sidebar-content">
       <div *ngFor="let item of navItems" 
            class="mobile-nav-item"
-           (click)="onNavItemClick(item.route)">
+           (click)="onNavItemClick(item.id)">
         <button
-          [routerLink]="item.route"
-          routerLinkActive="active"
-          [class.active]="isActiveRoute(item.id)"
+          [class.active]="activePage === item.id"
           class="mobile-nav-button">
           
           <img  class="mobile-nav-icon" [src]="item.icon" alt="icon" width="25" height="25">
@@ -108,7 +105,82 @@
 
     <!-- Content Area -->
     <div class="content-area">
-      <router-outlet></router-outlet>
+    <!-- Dashboard View -->
+    <div *ngIf="activePage === 'dashboard'" class="dashboard-view">
+      <div class="content-wrapper">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-value">{{ getDetectionRate() }}%</div>
+            <div class="kpi-label">Taux de détection</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value">{{ getTotalAnalyses() }}</div>
+            <div class="kpi-label">Éléments analysés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value">{{ getAverageConfidence() }}%</div>
+            <div class="kpi-label">Précision IA</div>
+          </div>
+        </div>
+
+        <!-- Recent Analyses Table -->
+        <div class="table-container">
+          <div class="table-header">
+            <h2>Analyses récentes</h2>
+          </div>
+          
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>ID Patient</th>
+                  <th>Nom du fichier</th>
+                  <th>Résultat</th>
+                  <th>Confiance</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let analysis of analyses; let i = index" class="table-row">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ analysis.patientId }}</td>
+                  <td>{{ analysis.fileName }}</td>
+                  <td>
+                    <span [class.positive]=" analysis.result.confidence >= 0.5"
+                          [class.negative]=" analysis.result.confidence < 0.5"
+                          class="result-badge">
+                      {{ analysis.result.confidence >= 0.5 ? 'POSITIF' : 'NÉGATIF' }}
+                    </span>
+                  </td>
+                  <td>{{ (analysis.result.confidence > 1 ? analysis.result.confidence : analysis.result.confidence * 100) | number:'1.0-0' }}%</td>
+                  <td>{{ analysis.date | date:'dd/MM/yyyy' }}</td>
+                </tr>
+                <tr *ngIf="analyses.length === 0">
+                  <td colspan="6" class="empty-message">Aucune analyse disponible</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analyse View -->
+    <div *ngIf="activePage === 'analyse'" class="page-view">
+      <app-upload></app-upload>
+    </div>
+
+    <!-- Historique View -->
+    <div *ngIf="activePage === 'historique'" class="page-view">
+      <app-history></app-history>
+    </div>
+
+    <!-- Profile View -->
+    <div *ngIf="activePage === 'profile'" class="page-view">
+      <app-profile></app-profile>
+    </div>
     </div>
   </div>
 </div>

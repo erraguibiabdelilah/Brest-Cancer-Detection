@@ -62,12 +62,7 @@
       </div>
 
       <div *ngIf="error" class="error-message">
-        <p>{{ error }}</p>
-        <p *ngIf="error.includes('déjà utilisé') || error.includes('already')" class="suggestion">
-          <a href="#" (click)="toggleMode(); $event.preventDefault()" class="link-button">
-            Cliquez ici pour vous connecter à la place
-          </a>
-        </p>
+        {{ error }}
       </div>
 
       <div *ngIf="successMessage" class="success-message">
