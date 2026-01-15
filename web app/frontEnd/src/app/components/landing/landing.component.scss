@@ -12,6 +12,10 @@ nav {
   top: 0;
   z-index: 100;
   box-shadow: 0 1px 3px rgb(6, 7, 100);
+
+  @media (max-width: 768px) {
+    padding: 1rem 4%;
+  }
 }
 
 .nav-content {
@@ -29,6 +33,15 @@ nav {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+    
+    img {
+      width: 50px !important;
+      height: 50px !important;
+    }
+  }
 }
 
 .nav-links {
@@ -38,6 +51,10 @@ nav {
   align-items: center;
   margin: 0;
   padding: 0;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .nav-links li {
@@ -71,6 +88,143 @@ nav {
 
 .btn-nav:hover {
   background: #361ea0;
+}
+
+/* Menu hamburger */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 101;
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+
+  span {
+    width: 100%;
+    height: 3px;
+    background: #1e293b;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+
+  &.active {
+    span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    span:nth-child(2) {
+      opacity: 0;
+    }
+
+    span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+  }
+}
+
+/* Menu mobile overlay */
+.mobile-menu-overlay {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    animation: fadeIn 0.3s ease;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Menu mobile */
+.mobile-menu {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100%;
+    background: #ffffff;
+    z-index: 100;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    overflow-y: auto;
+
+    &.open {
+      right: 0;
+    }
+  }
+}
+
+.mobile-nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 4rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  li {
+    margin: 0;
+  }
+
+  a {
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: block;
+    padding: 0.5rem 0;
+    transition: color 0.2s;
+    border-bottom: 1px solid #e2e8f0;
+
+    &:hover {
+      color: #2563eb;
+    }
+  }
+}
+
+.btn-nav-mobile {
+  background: #010125;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  margin-top: 1rem;
+
+  &:hover {
+    background: #361ea0;
+  }
 }
 
 /* Hero Section */
@@ -110,6 +264,14 @@ nav {
   color: #64748b;
   margin-bottom: 2rem;
   line-height: 1.7;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+  }
 }
 
 .btn-primary {
@@ -125,6 +287,13 @@ nav {
   border: none;
   cursor: pointer;
   font-family: inherit;
+
+  @media (max-width: 480px) {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .btn-primary:hover {
@@ -141,6 +310,14 @@ nav {
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
 }
 
 .scan-preview {
@@ -182,6 +359,20 @@ nav {
   justify-content: center;
   color: #94a3b8;
   font-size: 2rem;
+
+  @media (max-width: 768px) {
+    height: 250px;
+  }
+
+  @media (max-width: 480px) {
+    height: 200px;
+    font-size: 1.5rem;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 .progress-bar {
@@ -229,6 +420,14 @@ nav {
 .features {
   background: #f8fafc;
   padding: 4rem 6%;
+
+  @media (max-width: 768px) {
+    padding: 3rem 4%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2rem 4%;
+  }
 }
 
 .features-container {
@@ -245,11 +444,23 @@ nav {
   font-size: 2.2rem;
   color: #1e293b;
   margin-bottom: 0.8rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.8rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
 }
 
 .section-header p {
   font-size: 1.1rem;
   color: #64748b;
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+  }
 }
 
 .features-grid {
@@ -257,8 +468,13 @@ nav {
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
 
+  @media (max-width: 968px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
@@ -267,6 +483,10 @@ nav {
   border: 1px solid #e2e8f0;
   padding: 2rem;
   border-radius: 8px;
+
+  @media (max-width: 480px) {
+    padding: 1.5rem;
+  }
 }
 
 .feature-icon {
@@ -285,18 +505,34 @@ nav {
   font-size: 1.2rem;
   color: #1e293b;
   margin-bottom: 0.8rem;
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 }
 
 .feature p {
   color: #64748b;
   line-height: 1.6;
   font-size: 0.95rem;
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
 }
 
 /* Stats Section */
 .stats {
   padding: 4rem 6%;
   background: white;
+
+  @media (max-width: 768px) {
+    padding: 3rem 4%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2rem 4%;
+  }
 }
 
 .stats-container {
@@ -325,11 +561,19 @@ nav {
   font-weight: 700;
   color: #04054b;
   margin-bottom: 0.5rem;
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
 }
 
 .stat-label {
   color: #64748b;
   font-size: 0.95rem;
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+  }
 }
 
 /* CTA Section */
@@ -337,12 +581,30 @@ nav {
   background: linear-gradient(135deg, #f3f5f7 0%, #f8fafc 100%);
   padding: 5rem 6%;
   margin: 5em 0;
+
+  @media (max-width: 768px) {
+    padding: 3rem 4%;
+    margin: 3rem 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2rem 4%;
+    margin: 2rem 0;
+  }
 }
 
 /* About / Team Section */
 .about {
   padding: 4rem 6%;
   background: #ffffff;
+
+  @media (max-width: 768px) {
+    padding: 3rem 4%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2rem 4%;
+  }
 
   .about-container {
     max-width: 1100px;
@@ -430,12 +692,20 @@ nav {
   @media (max-width: 768px) {
     font-size: 2rem;
   }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
 }
 
 .cta-content p {
   font-size: 1.15rem;
   color: #64748b;
   margin-bottom: 2rem;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 }
 
 /* Footer */
@@ -443,6 +713,14 @@ footer {
   background: #000122;
   color: #ffffff;
   padding: 3rem 6% 2rem;
+
+  @media (max-width: 768px) {
+    padding: 2rem 4% 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.5rem 4% 1rem;
+  }
 }
 
 .footer-content {

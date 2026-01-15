@@ -12,6 +12,7 @@ import { AuthComponent } from '../auth/auth.component';
 })
 export class LandingComponent {
   showAuthModal = false;
+  showMobileMenu = false;
 
   constructor(private router: Router) {}
 
@@ -21,6 +22,14 @@ export class LandingComponent {
 
   closeAuthModal() {
     this.showAuthModal = false;
+  }
+
+  toggleMobileMenu() {
+    this.showMobileMenu = !this.showMobileMenu;
+  }
+
+  closeMobileMenu() {
+    this.showMobileMenu = false;
   }
 }
 
